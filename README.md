@@ -25,3 +25,9 @@ Hasło: Admin123! <br>
 ## Endpoint początkowy
 /produkty/lista <br>
 reszta dostępna poprzez wyklikanie guzików
+
+## Biblioteki
+- Spring
+- Thymleaf
+- Spring Security
+- Lombok
