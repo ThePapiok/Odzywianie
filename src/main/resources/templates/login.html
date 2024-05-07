@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{message.logowanie}"></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header{
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            text-align: center;
+            padding: 10px;
+            min-height: 10%;
+            flex: 10%;
+        }
+
+        footer{
+            background-color: #0E4749;
+            text-align: center;
+            padding: 10px;
+            color: #ECEDDF;
+            min-height: 9%;
+            flex: 5%;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 9%
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #F5F1EB;
+            padding-bottom: 9%;
+            flex: 85%;
+        }
+        .menu   {
+            position: relative;
+            bottom: 10%;
+            width: 10%;
+            height: 80%;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            color: #ECEDDF;
+            border-right: 3px solid #002626;
+            border-left: 3px solid #002626;
+            border-bottom: 3px solid #0E4749;
+            border-top: 3px solid #0E4749;
+            white-space: nowrap;
+        }
+
+        .menu:hover {
+            background: linear-gradient(to bottom, #125C5E, #166F73);
+        }
+
+        .menu:active {
+            border-top: 3px solid #002626;
+            border-bottom: 3px solid #125C5E;
+            background: #003B3B;
+        }
+
+        .guzikPrawa{
+            left: 25%;
+
+        }
+        .napis{
+            position: absolute;
+            top: 5%;
+            left: 2%;
+            color: #ECEDDF;
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <p class="napis" th:text="#{message.logowanie}"></p>
+    <a href="/produkty/lista">
+        <button class="menu" th:text="#{message.produkty}"></button>
+    </a>
+    <a href="/register" sec:authorize="isAnonymous()">
+        <button class="guzikPrawa menu" th:text="#{message.zarejestruj}"></button>
+    </a>
+</header>
+<main>
+    <form action="#" th:action="@{/login}" method="post" th:object="${uzytkownikDTO}">
+        <p><span th:text="#{message.login}"> </span><input type="text" id="username" name="username" required ></p>
+        <p><span th:text="#{message.password}"></span><input type="password" id="password" name="password" required ></p>
+        <p><span th:text="#{message.remember}"></span><input type="checkbox" id="remember" name="remember-me"></p>
+        <button type="submit" th:text="#{message.zaloguj}"></button>
+    </form>
+    <span th:text="#{message.errorLogin}" th:if="${error=='true'}"></span>
+    <span th:text="#{message.succesRegister}" th:if="${error=='false'}"></span>
+    <span th:text="#{message.succesPassword}" th:if="${passwordupdate=='true'}"></span>
+    <span th:text="#{message.usunieteKonto}" th:if="${deleteaccount=='true'}"></span>
+</main>
+<footer>Adrian Politowski 313128
+    <div class="jezyki">
+        <a th:href="@{'?lang=pl'}">
+            <button th:text="#{message.polski}"></button>
+        </a>
+        <a th:href="@{'?lang=pn'}">
+            <button th:text="#{message.pendzabksi}"></button>
+        </a>
+    </div>
+</footer>
+</body>
+</html>

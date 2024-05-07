@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{message.zapotrzebowanie}"></title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header{
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      text-align: center;
+      padding: 10px;
+      min-height: 10%;
+      flex: 10%;
+    }
+
+    footer{
+      background-color: #0E4749;
+      text-align: center;
+      padding: 10px;
+      color: #ECEDDF;
+      min-height: 9%;
+      flex: 5%;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 9%
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 10px;
+      background-color: #F5F1EB;
+      display: flex;
+      overflow: hidden;
+      padding-bottom: 9%;
+      flex: 85%;
+    }
+    .menu {
+      position: relative;
+      bottom: 10%;
+      width: 10%;
+      height: 80%;
+      cursor: pointer;
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      color: #ECEDDF;
+      border-right: 3px solid #002626;
+      border-left: 3px solid #002626;
+      border-bottom: 3px solid #0E4749;
+      border-top: 3px solid #0E4749;
+      white-space: nowrap;
+    }
+
+    .menu:hover {
+      background: linear-gradient(to bottom, #125C5E, #166F73);
+    }
+
+    .menu:active {
+      border-top: 3px solid #002626;
+      border-bottom: 3px solid #125C5E;
+      background: #003B3B;
+    }
+
+    .guzikPrawa{
+      left: 25%;
+
+    }
+
+    .napis{
+      position: absolute;
+      top: 5%;
+      left: 2%;
+      color: #ECEDDF;
+      font-size: 1.3rem;
+    }
+
+    .left-div {
+      flex: 1; /* Elastyczny, zajmuje dostępną przestrzeń */
+      overflow-y: auto; /* Dodaje pasek przewijania, jeśli zawartość jest za duża */
+      width:60%;
+      padding: 10px;
+    }
+
+    .right-div {
+      top: 0;
+      width:40%;
+      background-color: #EAEAEA; /* Kolor tła dla diva po prawej stronie */
+      overflow-y: auto; /* Dodaje pasek przewijania, jeśli zawartość jest za duża */
+      border-left: 3px solid black;
+      padding: 10px;
+    }
+
+    progress{
+      position: absolute;
+      left:150px;
+      top: -25%;
+      width: 250px;
+      height: 30px;
+      z-index: 0;
+    }
+
+    .progress-line {
+      top: 20%;
+      height: 15px;
+      z-index: 2;
+      width: 2px;
+      background-color: #4caf50;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+
+    .delete {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      bottom: 280px;
+      left: 180px;
+      cursor: pointer;
+      z-index: 2;
+      position: relative;
+      border: 7px solid #c43333;
+      background:
+              linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#fff 45%,#fff 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+              linear-gradient(135deg, #c43333 0%,#c43333 43%,#fff 45%,#fff 55%,#c43333 57%,#c43333 100%);
+    }
+
+    .delete:hover{
+      border: 7px solid #d93d3d;
+      background:
+              linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#fff 45%,#fff 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+              linear-gradient(135deg, #d93d3d 0%,#d93d3d 43%,#fff 45%,#fff 55%,#d93d3d 57%,#d93d3d 100%);
+    }
+
+    .formularz{
+      position: relative;
+      bottom: 60px;
+    }
+
+    .guzik{
+      width: 280px;
+      left: -3px;
+    }
+
+    .kafel:hover{
+
+      background-color: #F8BA7F;
+    }
+
+    .kafelki {
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: 65px;
+      top: 40%;
+      min-height: 85%;
+      gap: 80px;
+    }
+
+    .produkt {
+      padding-top: 10px;
+      width: 250px;
+      height: 250px;
+      box-sizing: border-box;
+      margin-left: 15px;
+
+    }
+    .kafel {
+      cursor: pointer;
+      width: 280px;
+      height: 355px;
+      background-color: #F5A65B;
+      border: 3px solid black
+    }
+    .opis {
+      box-sizing: border-box;
+      color: #ECEDDF;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .kate  {
+      width: 40px;
+      height: 40px;
+      bottom: 270px;
+      left: 10px;
+      z-index: 2;
+      position: relative;
+      border: 3px solid #c43333;
+
+    }
+
+
+
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="napis" th:text="#{message.zapotrzebowanie}"></p>
+  <a href="/produkty/lista">
+    <button class="menu" th:text="#{message.produkty}"></button>
+  </a>
+  <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.dodajprodukt}"></button>
+  </a>
+  <a href="/kategorie" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.kategorie}"></button>
+  </a>
+  <a href="/konto" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.mojekonto}"></button>
+  </a>
+  <a href="/logout" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+  </a>
+  <a href="/login" sec:authorize="isAnonymous()">
+    <button class="guzikPrawa menu" th:text="#{message.zaloguj}"></button>
+  </a>
+  <a href="/register" sec:authorize="isAnonymous()">
+    <button class="guzikPrawa menu" th:text="#{message.zarejestruj}"></button>
+  </a>
+</header>
+<main>
+  <div class="left-div">
+    <span th:text="#{message.validWeight}" th:if="${paramvalid} == 'true'"></span>
+    <div class="kafelki">
+    <span th:each="zapotrzebowanie : ${lista}">
+        <div class="kafel">
+          <span th:each="produkt : ${zapotrzebowanie.getZapotrzebowanieProdukty()}">
+            <a th:href="@{/zapotrzebowanie/{id}(id=${zapotrzebowanie.getId()})}" style="text-decoration: none;">
+                <img class="produkt" th:src="'data:image/jpeg;base64,' + ${produkt.getImage()}">
+                <div class="opis" th:text="${produkt.getName()}">
+                </div>
+            </a>
+            <img class="kate" th:src="'data:image/jpeg;base64,' + ${produkt.getImage_kategoria()}" th:title="${produkt.getKategoria()}">
+            <a th:href="@{/zapotrzebowanie/{id}/delete(id=${zapotrzebowanie.getId()})}">
+              <button class="delete"></button>
+            </a>
+            <form  class="formularz" action="#" th:action="@{/zapotrzebowanie/{id}(id=${zapotrzebowanie.getId()})}"method="post" sec:authorize="isAuthenticated()">
+                <p><span  th:text="#{message.waga}"></span> <input type="number" id="weight" name="weight" th:value="${zapotrzebowanie.getWeight()}" required></p>
+                <span  th:text="#{message.czas}"></span> <input type="time" id="time" name="time" th:value="${zapotrzebowanie.getTime()}" required>
+                <button type="submit" class="guzik" th:text="#{message.zapisz}"></button>
+            </form>
+          </span>
+        </div>
+    </span>
+    </div>
+  </div>
+  <div class="right-div">
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.kcal}"> </span>
+        <progress th:max="${minkcal}" th:value="${kcal}" style="accent-color: rgb(29, 74, 20)" th:if="${kcal} >= ${minkcal}" th:title="#{message.kcal} + ': ' + ${kcal} + 'min: ' + ${minkcal}"></progress>
+        <progress th:max="${minkcal}" th:value="${kcal}" style="accent-color: rgb(107, 27, 21)" th:if="${kcal} < ${minkcal}" th:title="#{message.kcal} + ': ' + ${kcal} + 'min: ' + ${minkcal}"></progress>
+      <div class="progress-line" style="left: 400px"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.fat}"> </span>
+        <progress th:max="${maxfat}" th:value="${fat}" style="accent-color: rgb(29, 74, 20)" th:if="${fat} >= ${minfat} and ${fat} < ${maxfat}" th:title="#{message.fat} + ': ' + ${fat} + 'min: ' + ${minfat} + 'max: ' + ${maxfat}"></progress>
+        <progress th:max="${maxfat}" th:value="${fat}" style="accent-color: rgb(107, 27, 21)" th:if="${fat} < ${minfat} or ${fat} >= ${maxfat}" th:title="#{message.fat} + ': ' + ${fat} + 'min: ' + ${minfat} + 'max: ' + ${maxfat}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minfat}*250/${maxfat}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.saturatedFat}"></span>
+        <progress th:max="${maxsaturatedfat}" th:value="${saturatedfat}" style="accent-color: rgb(29, 74, 20)" th:if="${saturatedfat} >= ${minsaturatedfat} and ${saturatedfat} < ${maxsaturatedfat}" th:title="#{message.saturatedFat} + ': ' + ${saturatedfat} + 'min: ' + ${minsaturatedfat} + 'max: ' + ${maxsaturatedfat}"></progress>
+        <progress th:max="${maxsaturatedfat}" th:value="${saturatedfat}" style="accent-color: rgb(107, 27, 21)" th:if="${saturatedfat} < ${minsaturatedfat} or ${saturatedfat} >= ${maxsaturatedfat}" th:title="#{message.saturatedFat} + ': ' + ${saturatedfat} + 'min: ' + ${minsaturatedfat} + 'max: ' + ${maxsaturatedfat}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + (${minsaturatedfat}*250/${maxsaturatedfat})) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.cholesterol}"> </span>
+        <progress th:max="${maxcholesterol}" th:value="${cholesterol}" style="accent-color: rgb(29, 74, 20)" th:if="${cholesterol} >= ${mincholesterol} and ${cholesterol} < ${maxcholesterol}" th:title="#{message.cholesterol} + ': ' + ${cholesterol} + 'min: ' + ${mincholesterol} + 'max: ' + ${maxcholesterol}"></progress>
+        <progress th:max="${maxcholesterol}" th:value="${cholesterol}" style="accent-color: rgb(107, 27, 21)" th:if="${cholesterol} < ${mincholesterol} or ${cholesterol} >= ${maxcholesterol}" th:title="#{message.cholesterol} + ': ' + ${cholesterol} + 'min: ' + ${mincholesterol} + 'max: ' + ${maxcholesterol}"></progress>
+        <div class="progress-line" style="left: 150px;"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.sodium}"> </span>
+        <progress th:max="${maxsodium}" th:value="${sodium}" style="accent-color: rgb(29, 74, 20)" th:if="${sodium} >= ${minsodium} and ${sodium} < ${maxsodium}" th:title="#{message.sodium} + ': ' + ${sodium} + 'min: ' + ${minsodium} + 'max: ' + ${maxsodium}"></progress>
+        <progress th:max="${maxsodium}" th:value="${sodium}" style="accent-color: rgb(107, 27, 21)" th:if="${sodium} < ${minsodium} or ${sodium} >= ${maxsodium}" th:title="#{message.sodium} + ': ' + ${sodium} + 'min: ' + ${minsodium} + 'max: ' + ${maxsodium}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minsodium}*250/${maxsodium}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.potassium}"> </span>
+        <progress th:max="${maxpotasium}" th:value="${potasium}" style="accent-color: rgb(29, 74, 20)" th:if="${potasium} >= ${minpotasium} and ${potasium} < ${maxpotasium}" th:title="#{message.potassium} + ': ' + ${potasium} + 'min: ' + ${minpotasium} + 'max: ' + ${maxpotasium}"></progress>
+        <progress th:max="${maxpotasium}" th:value="${potasium}" style="accent-color: rgb(107, 27, 21)" th:if="${potasium} < ${minpotasium} or ${potasium} >= ${maxpotasium}" th:title="#{message.potassium} + ': ' + ${potasium} + 'min: ' + ${minpotasium} + 'max: ' + ${maxpotasium}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minpotasium}*250/${maxpotasium}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.carbohydrates}"> </span>
+        <progress th:max="${maxcarbohydrates}" th:value="${carbohydrates}" style="accent-color: rgb(29, 74, 20)" th:if="${carbohydrates} >= ${mincarbohydrates} and ${carbohydrates} < ${maxcarbohydrates}" th:title="#{message.carbohydrates} + ': ' + ${carbohydrates} + 'min: ' + ${mincarbohydrates} + 'max: ' + ${maxcarbohydrates}"></progress>
+        <progress th:max="${maxcarbohydrates}" th:value="${carbohydrates}" style="accent-color: rgb(107, 27, 21)" th:if="${carbohydrates} < ${mincarbohydrates} or ${carbohydrates} >= ${maxcarbohydrates}" th:title="#{message.carbohydrates} + ': ' + ${carbohydrates} + 'min: ' + ${mincarbohydrates} + 'max: ' + ${maxcarbohydrates}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${mincarbohydrates}*250/${maxcarbohydrates}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.fiber}"> </span>
+        <progress th:max="${maxfiber}" th:value="${fiber}" style="accent-color: rgb(29, 74, 20)" th:if="${fiber} >= ${minfiber} and ${fiber} < ${maxfiber}" th:title="#{message.fiber} + ': ' + ${fiber} + 'min: ' + ${minfiber} + 'max: ' + ${maxfiber}"></progress>
+        <progress th:max="${maxfiber}" th:value="${fiber}" style="accent-color: rgb(107, 27, 21)" th:if="${fiber} < ${minfiber} or ${fiber} >= ${maxfiber}" th:title="#{message.fiber} + ': ' + ${fiber} + 'min: ' + ${minfiber} + 'max: ' + ${maxfiber}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minfiber}*250/${maxfiber}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.sugars}"> </span>
+        <progress th:max="${maxsugars}" th:value="${sugars}" style="accent-color: rgb(29, 74, 20)" th:if="${sugars} >= ${minsugars} and ${sugars} < ${maxsugars}" th:title="#{message.sugars} + ': ' + ${sugars} + 'min: ' + ${minsugars} + 'max: ' + ${maxsugars}"></progress>
+        <progress th:max="${maxsugars}" th:value="${sugars}" style="accent-color: rgb(107, 27, 21)" th:if="${sugars} < ${minsugars} or ${sugars} >= ${maxsugars}" th:title="#{message.sugars} + ': ' + ${sugars} + 'min: ' + ${minsugars} + 'max: ' + ${maxsugars}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minsugars}*250/${maxsugars}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.protein}"> </span>
+        <progress th:max="${maxprotein}" th:value="${protein}" style="accent-color: rgb(29, 74, 20)" th:if="${protein} >= ${minprotein} and ${protein} < ${maxprotein}" th:title="#{message.protein} + ': ' + ${protein} + 'min: ' + ${minprotein} + 'max: ' + ${maxprotein}"></progress>
+        <progress th:max="${maxprotein}" th:value="${protein}" style="accent-color: rgb(107, 27, 21)" th:if="${protein} < ${minprotein} or ${protein} >= ${maxprotein}" th:title="#{message.protein} + ': ' + ${protein} + 'min: ' + ${minprotein} + 'max: ' + ${maxprotein}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minprotein}*250/${maxprotein}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.ascorbicAcid}"> </span>
+        <progress th:max="${maxascorbicacid}" th:value="${ascorbicacid}" style="accent-color: rgb(29, 74, 20)" th:if="${ascorbicacid} >= ${minascorbicacid} and ${ascorbicacid} < ${maxascorbicacid}" th:title="#{message.ascorbicAcid} + ': ' + ${ascorbicacid} + 'min: ' + ${minascorbicacid} + 'max: ' + ${maxascorbicacid}"></progress>
+        <progress th:max="${maxascorbicacid}" th:value="${ascorbicacid}" style="accent-color: rgb(107, 27, 21)" th:if="${ascorbicacid} < ${minascorbicacid} or ${ascorbicacid} >= ${maxascorbicacid}" th:title="#{message.ascorbicAcid} + ': ' + ${ascorbicacid} + 'min: ' + ${minascorbicacid} + 'max: ' + ${maxascorbicacid}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minascorbicacid}*250/${maxascorbicacid}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.iron}"> </span>
+        <progress th:max="${maxiron}" th:value="${iron}" style="accent-color: rgb(29, 74, 20)" th:if="${iron} >= ${miniron} and ${iron} < ${maxiron}" th:title="#{message.iron} + ': ' + ${iron} + 'min: ' + ${miniron} + 'max: ' + ${maxiron}"></progress>
+        <progress th:max="${maxiron}" th:value="${iron}" style="accent-color: rgb(107, 27, 21)" th:if="${iron} < ${miniron} or ${iron} >= ${maxiron}" th:title="#{message.iron} + ': ' + ${iron} + 'min: ' + ${miniron} + 'max: ' + ${maxiron}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${miniron}*250/${maxiron}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.vitaminB6}"> </span>
+        <progress th:max="${maxvitaminb6}" th:value="${vitaminb6}" style="accent-color: rgb(29, 74, 20)" th:if="${vitaminb6} >= ${minvitaminb6} and ${vitaminb6} < ${maxvitaminb6}" th:title="#{message.vitaminB6} + ': ' + ${vitaminb6} + 'min: ' + ${minvitaminb6} + 'max: ' + ${maxvitaminb6}"></progress>
+        <progress th:max="${maxvitaminb6}" th:value="${vitaminb6}" style="accent-color: rgb(107, 27, 21)" th:if="${vitaminb6} < ${minvitaminb6} or ${vitaminb6} >= ${maxvitaminb6}" th:title="#{message.vitaminB6} + ': ' + ${vitaminb6} + 'min: ' + ${minvitaminb6} + 'max: ' + ${maxvitaminb6}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minvitaminb6}*250/${maxvitaminb6}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.magnesium}"> </span>
+        <progress th:max="${minmagnesium}" th:value="${magnesium}" style="accent-color: rgb(29, 74, 20)" th:if="${magnesium} >= ${magnesium}" th:title="#{message.magnesium} + ': ' + ${magnesium} + 'min: ' + ${minmagnesium}"></progress>
+        <progress th:max="${minmagnesium}" th:value="${magnesium}" style="accent-color: rgb(107, 27, 21)" th:if="${magnesium} < ${magnesium}" th:title="#{message.magnesium} + ': ' + ${magnesium} + 'min: ' + ${minmagnesium}"></progress>
+        <div class="progress-line" style="left: 400px"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.calcium}"> </span>
+        <progress th:max="${maxcalcium}" th:value="${calcium}" style="accent-color: rgb(29, 74, 20)" th:if="${calcium} >= ${mincalcium} and ${calcium} < ${maxcalcium}" th:title="#{message.calcium} + ': ' + ${calcium} + 'min: ' + ${mincalcium} + 'max: ' + ${maxcalcium}"></progress>
+        <progress th:max="${maxcalcium}" th:value="${calcium}" style="accent-color: rgb(107, 27, 21)" th:if="${calcium} < ${mincalcium} or ${calcium} >= ${maxcalcium}" th:title="#{message.calcium} + ': ' + ${calcium} + 'min: ' + ${mincalcium} + 'max: ' + ${maxcalcium}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${mincalcium}*250/${maxcalcium}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.vitaminD}"> </span>
+        <progress th:max="${maxvitamind}" th:value="${vitamind}" style="accent-color: rgb(29, 74, 20)" th:if="${vitamind} >= ${minvitamind} and ${vitamind} < ${maxvitamind}" th:title="#{message.vitaminD} + ': ' + ${vitamind} + 'min: ' + ${minvitamind} + 'max: ' + ${maxvitamind}"></progress>
+        <progress th:max="${maxvitamind}" th:value="${vitamind}" style="accent-color: rgb(107, 27, 21)" th:if="${vitamind} < ${minvitamind} or ${vitamind} >= ${maxvitamind}" th:title="#{message.vitaminD} + ': ' + ${vitamind} + 'min: ' + ${minvitamind} + 'max: ' + ${maxvitamind}"></progress>
+        <div class="progress-line" th:style="'left:' + (150 + ${minvitamind}*250/${maxvitamind}) + 'px'"></div>
+      </p>
+    </div>
+    <div style="position: relative">
+      <p>
+        <span th:text="#{message.vitaminB12}"> </span>
+        <progress th:max="${minvitaminb12}" th:value="${vitaminb12}" style="accent-color: rgb(29, 74, 20)" th:if="${vitaminb12} >= ${vitaminb12}" th:title="#{message.vitaminB12} + ': ' + ${vitaminb12} + 'min: ' + ${minvitaminb12} + 'max: ' + ${maxvitaminb12}"></progress>
+        <progress th:max="${minvitaminb12}" th:value="${vitaminb12}" style="accent-color: rgb(107, 27, 21)" th:if="${vitaminb12} < ${vitaminb12}" th:title="#{message.vitaminB12} + ': ' + ${vitaminb12} + 'min: ' + ${minvitaminb12} + 'max: ' + ${maxvitaminb12}"></progress>
+        <div class="progress-line" style="left: 400px"></div>
+      </p>
+    </div>
+  </div>
+</main>
+<footer>Adrian Politowski 313128
+  <div class="jezyki">
+    <a th:href="@{'?lang=pl'}">
+      <button th:text="#{message.polski}"></button>
+    </a>
+    <a th:href="@{'?lang=pn'}">
+      <button th:text="#{message.pendzabksi}"></button>
+    </a>
+  </div>
+</footer>
+</body>
+</html>

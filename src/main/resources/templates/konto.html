@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{message.logowanie}"></title>
+    <style>
+
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header{
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            text-align: center;
+            padding: 10px;
+            min-height: 10%;
+            flex: 10%;
+        }
+
+        footer{
+            background-color: #0E4749;
+            text-align: center;
+            padding: 10px;
+            color: #ECEDDF;
+            min-height: 9%;
+            flex: 5%;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 9%
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #F5F1EB;
+            padding-bottom: 9%;
+            flex: 85%;
+        }
+
+
+        .menu {
+            position: relative;
+            bottom: 10%;
+            width: 10%;
+            height: 80%;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            color: #ECEDDF;
+            border-right: 3px solid #002626;
+            border-left: 3px solid #002626;
+            border-bottom: 3px solid #0E4749;
+            border-top: 3px solid #0E4749;
+            white-space: nowrap;
+        }
+
+        .menu:hover {
+            background: linear-gradient(to bottom, #125C5E, #166F73);
+        }
+
+        .menu:active {
+            border-top: 3px solid #002626;
+            border-bottom: 3px solid #125C5E;
+            background: #003B3B;
+        }
+
+        .guzikPrawa{
+            left: 25%;
+
+        }
+
+        .bold{
+            font-weight: bold;
+        }
+        .deleteAccount{
+            background-color: rgba(14, 71, 73, 0.8);
+            border: 3px solid black;
+            z-index: 1;
+            position: absolute;
+            left: 5%;
+            top: 20%;
+            height: 30%;
+            width: 20%;
+            text-align: center;
+        }
+        .guzikDelete{
+            height: 200%;
+            width: 200%;
+            position: relative;
+            left:190%;
+        }
+        .guzikWroc{
+            width: 200%;
+            height:200%;
+            position: relative;
+            left:290%;
+            margin-left:50%;
+        }
+        .napis{
+            position: absolute;
+            top: 5%;
+            left: 2%;
+            color: #ECEDDF;
+            font-size: 1.3rem;
+        }
+        .flex{
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <p class="napis" th:text="#{message.mojekonto}" th:if="${informations=='true'}"></p>
+    <p class="napis" th:text="#{message.edytuj}" th:if="${edit=='true'}"></p>
+    <p class="napis" th:text="#{message.zmienHaslo}" th:if="${passwordupdate=='true'}"></p>
+
+    <a href="/produkty/lista">
+        <button class="menu" th:text="#{message.produkty}"></button>
+    </a>
+    <a href="/zapotrzebowanie" sec:authorize="isAuthenticated()">
+        <button class="menu" th:text="#{message.zapotrzebowanie}"></button>
+    </a>
+    <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+        <button class="menu" th:text="#{message.dodajprodukt}"></button>
+    </a>
+    <a href="/kategorie" sec:authorize="hasRole('ADMIN')">
+        <button class="menu" th:text="#{message.kategorie}"></button>
+    </a>
+    <a href="/logout" sec:authorize="isAuthenticated()">
+        <button  class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+    </a>
+</header>
+<main>
+    <span th:if="${informations}=='true'">
+        <p><span th:text="#{message.login}" class="bold"></span><span th:text="${user.getName()}"></span></p>
+        <p><span th:text="#{message.weight}" class="bold"></span><span th:text="${user.getWeight()}"></span></p>
+        <p><span th:text="#{message.height}" class="bold"></span><span th:text="${user.getHeight()}"></span></p>
+        <p><span th:text="#{message.age}" class="bold"></span><span th:text="${user.getAge()}"></span></p>
+        <p><span th:text="#{message.gender}" class="bold"></span>
+            <span th:text=" #{message.kobieta}"  th:if="${user.getGender().name().equals('WOMAN')}"></span>
+            <span th:text=" #{message.mezczyzna}"  th:if="${user.getGender().name().equals('MAN')}"></span>
+        </p>
+        <p><span th:text="#{message.activity }" class="bold"></span>
+            <span th:text="#{message.activity0}"  th:if="${user.getActivity()}==0"></span>
+            <span th:text="#{message.activity1}"  th:if="${user.getActivity()}==1"></span>
+            <span th:text="#{message.activity2}"  th:if="${user.getActivity()}==2"></span>
+            <span th:text="#{message.activity3}"  th:if="${user.getActivity()}==3"></span>
+            <span th:text="#{message.activity4}"  th:if="${user.getActivity()}==4"></span>
+        </p>
+
+    </span>
+    <div class="deleteAccount" th:if="${delete=='true'}">
+        <h2 th:text="#{message.pytanieDeleteAccount}"></h2>
+        <div class="flex">
+            <form action="#" th:action="@{/konto/deleteAccount}" method="post" style="margin-top: 20%">
+                <button class="guzikDelete" type="submit" th:text="#{message.tak}"></button>
+            </form>
+            <a href="/konto" style="margin-top: 20%">
+                <button class="guzikWroc" th:text="#{message.nie}"></button>
+            </a>
+        </div>
+    </div>
+    <form action="#" th:action="@{/konto/editPassword}" method="post" th:object="${uzytkownikDTO}" th:if="${passwordupdate}=='true'">
+        <p><span th:text="#{message.oldpassword}" class="bold"></span><input type="password" id="oldpassword" name="oldpassword"></p>
+        <p th:if="${error}=='true'" th:text="#{message.badpassword}"></p>
+        <p th:if="${same}=='true'" th:text="#{message.samepassword}"></p>
+        <p><span th:text="#{message.newpassword}" class="bold"></span><input type="password" th:field="*{password}"></p>
+        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" ></p>
+        <button type="submit" th:text="#{message.zapisz}"></button>
+    </form><br>
+    <a href="/konto">
+        <button th:text="#{message.wroc}" th:if="${passwordupdate}=='true'"></button>
+    </a>
+    <form action="#" th:action="@{/konto/editInformations}" method="post" th:object="${uzytkownikDTO}" th:if="${edit}=='true'">
+        <p><span th:text="#{message.weight}" class="bold"></span><input type="number" th:value="${user.getWeight()}"  id="weight" name="weight"></p>
+        <p th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" ></p>
+        <p><span th:text="#{message.height}" class="bold"></span><input type="number" th:value="${user.getHeight()}"  id="height" name="height" ></p>
+        <p th:if="${#fields.hasErrors('height')}" th:errors="*{height}" ></p>
+        <p><span th:text="#{message.age}" class="bold"></span><input type="number" th:value="${user.getAge()}"  id="age" name="age" ></p>
+        <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}" ></p>
+        <p><span th:text="#{message.gender}" class="bold"></span>
+            <select id="gender" name="gender">
+                <option th:text="#{message.kobieta}" th:value="WOMAN" th:attr="selected=${user.getGender().name().equals('WOMAN')}"></option>
+                <option th:text="#{message.mezczyzna}" th:value="MAN" th:attr="selected=${user.getGender().name().equals('MAN')}"></option>
+            </select>
+        </p>
+        <p><span th:text="#{message.activity }" class="bold"></span>
+            <select id="activity" name="activity">
+                <option th:text="#{message.activity0}" th:value="0" th:attr="selected=${user.getActivity()==0}"></option>
+                <option th:text="#{message.activity1}" th:value="1" th:attr="selected=${user.getActivity()==1}"></option>
+                <option th:text="#{message.activity2}" th:value="2" th:attr="selected=${user.getActivity()==2}"></option>
+                <option th:text="#{message.activity3}" th:value="3" th:attr="selected=${user.getActivity()==3}"></option>
+                <option th:text="#{message.activity4}" th:value="4" th:attr="selected=${user.getActivity()==4}"></option>
+            </select>
+        </p>
+        <p th:if="${#fields.hasErrors('activity')}" th:errors="*{activity}" ></p>
+        <button type="submit" th:text="#{message.zapisz}"></button>
+    </form><br>
+    <a href="/konto">
+        <button th:text="#{message.wroc}" th:if="${edit}=='true'"></button>
+    </a>
+    <p th:if="${informations}=='true'">
+        <a href="/konto/editInformations">
+            <button th:text="#{message.edytuj}"></button>
+        </a>
+        <a href="/konto/editPassword">
+            <button th:text="#{message.zmienHaslo}"></button>
+        </a>
+        <a href="/konto/deleteAccount">
+            <button th:text="#{message.usunKonto}"></button>
+        </a>
+    </p>
+</main>
+<footer>Adrian Politowski 313128
+    <div class="jezyki">
+        <a th:href="@{'?lang=pl'}">
+            <button th:text="#{message.polski}"></button>
+        </a>
+        <a th:href="@{'?lang=pn'}">
+            <button th:text="#{message.pendzabksi}"></button>
+        </a>
+    </div>
+</footer>
+</body>
+</html>

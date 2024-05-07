@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pl-PL" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{message.produkty}"></title>
+    <style>
+
+
+
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header{
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            text-align: center;
+            padding: 10px;
+            min-height: 10%;
+            flex: 10%;
+        }
+
+        footer{
+            background-color: #0E4749;
+            text-align: center;
+            padding: 10px;
+            color: #ECEDDF;
+            min-height: 9%;
+            flex: 5%;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 9%;
+            z-index: 3;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #F5F1EB;
+            padding-bottom: 9%;
+            flex: 85%;
+        }
+        .kafelki {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: 65px;
+            top: 40%;
+            min-height: 85%;
+            gap: 80px;
+        }
+
+        .produkt {
+            padding-top: 10px;
+            width: 250px;
+            height: 250px;
+            box-sizing: border-box;
+            margin-left: 15px;
+
+        }
+        .kafel {
+            cursor: pointer;
+            width: 280px;
+            height: 368px;
+            background-color: #F5A65B;
+            border: 3px solid black
+        }
+        .opis {
+            box-sizing: border-box;
+            color: #ECEDDF;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .menu {
+            position: relative;
+            bottom: 10%;
+            width: 10%;
+            height: 80%;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            color: #ECEDDF;
+            border-right: 3px solid #002626;
+            border-left: 3px solid #002626;
+            border-bottom: 3px solid #0E4749;
+            border-top: 3px solid #0E4749;
+            white-space: nowrap;
+        }
+
+        .kafel:hover{
+
+            background-color: #F8BA7F;
+        }
+
+        .menu:hover {
+            background: linear-gradient(to bottom, #125C5E, #166F73);
+        }
+
+        .menu:active {
+            border-top: 3px solid #002626;
+            border-bottom: 3px solid #125C5E;
+            background: #003B3B;
+        }
+
+        .guzikPrawa{
+            left: 25%;
+
+        }
+        .napis{
+            position: absolute;
+            top: 5%;
+            left: 2%;
+            color: #ECEDDF;
+            font-size: 1.3rem;
+        }
+        .guzik{
+            width: 280px;
+            left: -3px;
+        }
+        .wyszukiwarka{
+            padding-top: 30px;
+            margin-left: 20px;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            height: 3%;
+            max-height: 3%;
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            color: #ECEDDF;
+            text-align: center;
+
+        }
+
+        .kate  {
+            width: 40px;
+            height: 40px;
+            bottom: 270px;
+            left: 10px;
+            z-index: 2;
+            position: relative;
+            border: 3px solid #c43333;
+
+        }
+        .delete {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            bottom: 280px;
+            left: 180px;
+            cursor: pointer;
+            z-index: 2;
+            position: relative;
+            border: 7px solid #c43333;
+            background:
+                    linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#fff 45%,#fff 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+                    linear-gradient(135deg, #c43333 0%,#c43333 43%,#fff 45%,#fff 55%,#c43333 57%,#c43333 100%);
+        }
+
+        .delete:hover{
+            border: 7px solid #d93d3d;
+            background:
+                    linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#fff 45%,#fff 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+                    linear-gradient(135deg, #d93d3d 0%,#d93d3d 43%,#fff 45%,#fff 55%,#d93d3d 57%,#d93d3d 100%);
+        }
+
+        .formularz{
+            position: relative;
+            bottom: 60px;
+        }
+        .strony{
+            position: relative;
+            right: 600px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <p class="napis" th:text="#{message.produkty}"></p>
+    <a href="/zapotrzebowanie" sec:authorize="isAuthenticated()">
+        <button class="menu" th:text="#{message.zapotrzebowanie}"></button>
+    </a>
+    <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+        <button class="menu" th:text="#{message.dodajprodukt}"></button>
+    </a>
+    <a href="/kategorie" sec:authorize="hasRole('ADMIN')">
+        <button class="menu" th:text="#{message.kategorie}"></button>
+    </a>
+    <a href="/konto" sec:authorize="isAuthenticated()">
+        <button class="guzikPrawa menu" th:text="#{message.mojekonto}"></button>
+    </a>
+    <a href="/logout" sec:authorize="isAuthenticated()">
+        <button class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+    </a>
+    <a href="/login" sec:authorize="isAnonymous()">
+        <button class="guzikPrawa menu" th:text="#{message.zaloguj}"></button>
+    </a>
+    <a href="/register" sec:authorize="isAnonymous()">
+        <button class="guzikPrawa menu" th:text="#{message.zarejestruj}"></button>
+    </a>
+</header>
+<main>
+    <br>
+    <div class="wyszukiwarka">
+        <form action="/produkty/lista" method="get">
+            <span th:text="#{message.wyszukaj}"></span>
+            <input type="text" id="text" name="text" th:value="${paramtext}">
+            <span th:text="#{message.sortuj}"></span>
+            <select id="sort" name="sort">
+                <option th:text="#{message.name}" value="name" th:attr="selected=${paramsort == 'name'}"></option>
+                <option th:text="#{message.kcal}" value="kcal" th:attr="selected=${paramsort == 'kcal'}"></option>
+                <option th:text="#{message.fat}" value="fat" th:attr="selected=${paramsort == 'fat'}"></option>
+                <option th:text="#{message.carbohydrates}" value="carbohydrates" th:attr="selected=${paramsort == 'carbohydrates'}"></option>
+                <option th:text="#{message.sugars}" value="sugars" th:attr="selected=${paramsort == 'sugars'}"></option>
+                <option th:text="#{message.potein}" value="protein" th:attr="selected=${paramsort == 'protein'}"></option>
+                <option th:text="#{message.saturatedFat}" value="saturatedFat" th:attr="selected=${paramsort == 'saturatedFat'}"></option>
+                <option th:text="#{message.cholesterol}" value="cholesterol" th:attr="selected=${paramsort == 'cholesterol'}"></option>
+                <option th:text="#{message.fiber}" value="fiber" th:attr="selected=${paramsort == 'fiber'}"></option>
+                <option th:text="#{message.sodium}" value="sodium" th:attr="selected=${paramsort == 'sodium'}"></option>
+                <option th:text="#{message.potassium}" value="potassium" th:attr="selected=${paramsort == 'potassium'}"></option>
+                <option th:text="#{message.protein}" value="protein"  th:attr="selected=${paramsort == 'protein'}"></option>
+                <option th:text="#{message.iron}" value="iron" th:attr="selected=${paramsort == 'iron'}"></option>
+                <option th:text="#{message.magnesium}" value="magnesium" th:attr="selected=${paramsort == 'magnesium'}"></option>
+                <option th:text="#{message.calcium}" value="calcium" th:attr="selected=${paramsort == 'calcium'}"></option>
+                <option th:text="#{message.ascorbicAcid}" value="ascorbicAcid" th:attr="selected=${paramsort == 'ascorbicAcid'}"></option>
+                <option th:text="#{message.vitaminD}" value="vitamindD" th:attr="selected=${paramsort == 'vitamindD'}"></option>
+                <option th:text="#{message.vitaminB6}" value="vitaminB6" th:attr="selected=${paramsort == 'vitaminB6'}"></option>
+                <option th:text="#{message.vitaminB12}" value="vitaminB12" th:attr="selected=${paramsort == 'vitaminB12'}"></option>
+            </select>
+            <span th:text="#{message.trybSortowania}"></span>
+            <select id="type" name="type">
+                <option th:text="#{message.sortowanieMalejace}" value="descending" th:attr="selected=${paramtype == 'descending'}"></option>
+                <option th:text="#{message.sortowanieRosnace}" value="ascending" th:attr="selected=${paramtype == 'ascending'}"></option>
+            </select>
+            <span th:text="#{message.iloscWynikow}"></span>
+            <select id="size" name="size">
+                <option value="5" th:attr="selected=${paramsize == 5}">5</option>
+                <option value="10" th:attr="selected=${paramsize == 10}">10</option>
+                <option value="15" th:attr="selected=${paramsize == 15}">15</option>
+                <option value="20" th:attr="selected=${paramsize == 20}">20</option>
+            </select>
+            <span th:text="#{message.kategoriaProduktu}"></span>
+            <select id="kategoria" name="kategoria">
+                <option th:each="item : ${kategorie}" th:value="${item}" th:text="${item}" th:attr="selected=${paramkategoria == item}"></option>
+            </select>
+            <button typ="submit" th:text="#{message.przeslij}"></button>
+        </form>
+    </div>
+    <span th:text="#{message.validWeight}" th:if="${paramvalid} == 'true'"></span>
+    <div class="kafelki">
+    <span th:each="produkt : ${lista}">
+        <div class="kafel">
+            <a th:href="@{/produkty/{id}(id=${produkt.getId()})}" style="text-decoration: none;">
+                <img class="produkt" th:src="'data:image/jpeg;base64,' + ${produkt.getImage()}">
+                <div class="opis" th:text="${produkt.getName()}">
+                </div>
+            </a>
+            <img class="kate" th:src="'data:image/jpeg;base64,' + ${produkt.getImage_kategoria()}" th:title="${produkt.getKategoria()}">
+            <a th:href="@{/produkty/{id}/delete (id=${produkt.getId()})}" sec:authorize="hasRole('ADMIN')">
+                <button class="delete"></button>
+            </a>
+            <form  class="formularz" action="#" th:action="@{/produkty/{id}(id=${produkt.getId()})}" method="post" sec:authorize="isAuthenticated()">
+                <p><span  th:text="#{message.waga}"></span> <input type="number" id="weight" name="weight" th:value="${produkt.getAverageWeight()}" required></p>
+                <span  th:text="#{message.czas}"></span> <input type="time" id="time" name="time" th:value="${time}" required>
+                <button type="submit" class="guzik" th:text="#{message.dodaj}"></button>
+            </form>
+        </div>
+    </span>
+    </div>
+</main>
+<footer>
+    <div class="strony">
+        <span th:if="${left} == 'true'" style="color: #2667FF; cursor: default;">...</span>
+        <a style="color: #ECE5F0; cursor: pointer; text-decoration: none;" th:href="@{/produkty/lista?text=__${paramtext}__&sort=__${paramsort}__&type=__${paramtype}__&size=__${paramsize}__&page=__${page}__&kategoria=__${paramkategoria}__}" th:each="page : ${pagesbefore}" th:text="' ' + ${page}"></a>
+        <span style="color: #2667FF; cursor: default; text-decoration: underline;" th:text="${parampage}"></span>
+        <a style="color: #ECE5F0; cursor: pointer; text-decoration: none;" th:href="@{/produkty/lista?text=__${paramtext}__&sort=__${paramsort}__&type=__${paramtype}__&size=__${paramsize}__&page=__${page}__&kategoria=__${paramkategoria}__}" th:each="page : ${pagesafter}" th:text="' ' + ${page}"></a>
+        <span th:if="${right} == 'true'" style="color: #2667FF; cursor: default;">...</span>
+    </div>
+    Adrian Politowski 313128
+    <div class="jezyki">
+        <a th:href="@{'?lang=pl'}">
+            <button th:text="#{message.polski}"></button>
+        </a>
+        <a th:href="@{'?lang=pn'}">
+            <button th:text="#{message.pendzabksi}"></button>
+        </a>
+    </div>
+</footer>
+</body>
+</html>

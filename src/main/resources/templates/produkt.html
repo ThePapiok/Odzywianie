@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${produkt.getName()}"></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header{
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            text-align: center;
+            padding: 10px;
+            min-height: 10%;
+            flex: 10%;
+
+        }
+
+        footer{
+            background-color: #0E4749;
+            text-align: center;
+            padding: 10px;
+            color: #ECEDDF;
+            min-height: 9%;
+            flex: 5%;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 9%
+        }
+        img{
+            padding-top: 10px;
+            width: 250px;
+            height: 250px;
+            box-sizing: border-box;
+            margin-left: 15px;
+
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #F5F1EB;
+            padding-bottom: 9%;
+            flex: 85%;
+
+        }
+        .menu {
+            position: relative;
+            bottom: 10%;
+            width: 10%;
+            height: 80%;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #0E4749, #135E61);
+            color: #ECEDDF;
+            border-right: 3px solid #002626;
+            border-left: 3px solid #002626;
+            border-bottom: 3px solid #0E4749;
+            border-top: 3px solid #0E4749;
+            white-space: nowrap;
+        }
+
+        .menu:hover {
+            background: linear-gradient(to bottom, #125C5E, #166F73);
+        }
+
+        .menu:active {
+            border-top: 3px solid #002626;
+            border-bottom: 3px solid #125C5E;
+            background: #003B3B;
+        }
+
+        .guzikPrawa{
+            left: 25%;
+
+        }
+        .bold{
+             font-weight: bold;
+         }
+
+        .napis{
+            position: absolute;
+            top: 5%;
+            left: 2%;
+            color: #ECEDDF;
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <p class="napis" th:text="${produkt.getName()}"></p>
+    <a href="/produkty/lista">
+        <button class="menu" th:text="#{message.produkty}"></button>
+    </a>
+    <a href="/zapotrzebowanie" sec:authorize="isAuthenticated()">
+        <button class="menu" th:text="#{message.zapotrzebowanie}"></button>
+    </a>
+    <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+        <button class="menu" th:text="#{message.dodajprodukt}"></button>
+    </a>
+    <a href="/kategorie" sec:authorize="hasRole('ADMIN')">
+        <button class="menu" th:text="#{message.kategorie}"></button>
+    </a>
+    <a href="/konto" sec:authorize="isAuthenticated()">
+        <button class="guzikPrawa menu" th:text="#{message.mojekonto}"></button>
+    </a>
+    <a href="/logout" sec:authorize="isAuthenticated()">
+        <button class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+    </a>
+    <a href="/login" sec:authorize="isAnonymous()">
+        <button class="guzikPrawa menu" th:text="#{message.zaloguj}"></button>
+    </a>
+    <a href="/register" sec:authorize="isAnonymous()">
+        <button class="guzikPrawa menu" th:text="#{message.zarejestruj}"></button>
+    </a>
+</header>
+<main>
+    <span th:if="${error}=='true'" th:text="#{message.errorFound}">
+    </span>
+    <span th:unless="${error}=='true'">
+    <p><img th:src="'data:image/jpeg;base64,' + ${produkt.getImage()}"></p>
+    <form action="#" th:action="@{/produkty/{id}(id=${produkt.getId()})}" method="post" sec:authorize="isAuthenticated()">
+        <p><span  th:text="#{message.waga}"></span> <input type="number" id="weight" name="weight" th:value="${produkt.getAverageWeight()}" required></p>
+        <span  th:text="#{message.czas}"></span> <input type="time" id="time" name="time" th:value="${time}" required>
+        <button type="submit" class="guzik" th:text="#{message.dodaj}"></button>
+    </form>
+        <br>
+        <br>
+        <p><span class="bold" th:text="#{message.kcalProduktu}"></span><span th:text="${produkt.getKcal()}"></span></p>
+        <p><span class="bold" th:text="#{message.tluszczProduktu}"></span><span th:text="${produkt.getFat()}"></span></p>
+        <p><span class="bold" th:text="#{message.tluszczeNasyconeProduktu}"></span><span th:text="${produkt.getSaturatedFat()}"></span></p>
+        <p><span class="bold" th:text="#{message.cholesterolProduktu}"></span><span th:text="${produkt.getCholesterol()}"></span></p>
+        <p><span class="bold" th:text="#{message.sodProduktu}"></span><span th:text="${produkt.getSodium()}"></span></p>
+        <p><span class="bold" th:text="#{message.potasProduktu}"></span><span th:text="${produkt.getPotassium()}"></span></p>
+        <p><span class="bold" th:text="#{message.weglowodanyProduktu}"></span><span th:text="${produkt.getCarbohydrates()}"></span></p>
+        <p><span class="bold" th:text="#{message.blonnikProduktu}"></span><span th:text="${produkt.getFiber()}"></span></p>
+        <p><span class="bold" th:text="#{message.cukryProduktu}"></span><span th:text="${produkt.getSugars()}"></span></p>
+        <p><span class="bold" th:text="#{message.bialkoProduktu}"></span><span th:text="${produkt.getProtein()}"></span></p>
+        <p><span class="bold" th:text="#{message.kwasAskorbinowyProduktu}"></span><span th:text="${produkt.getAscorbicAcid()}"></span></p>
+        <p><span class="bold" th:text="#{message.zelazoProduktu}"></span><span th:text="${produkt.getIron()}"></span></p>
+        <p><span class="bold" th:text="#{message.witaminaB6Produktu}"></span><span th:text="${produkt.getVitaminB6()}"></span></p>
+        <p><span class="bold" th:text="#{message.magnezProduktu}"></span><span th:text="${produkt.getMagnesium()}"></span></p>
+        <p><span class="bold" th:text="#{message.wapnProduktu}"></span><span th:text="${produkt.getCalcium()}"></span></p>
+        <p><span class="bold" th:text="#{message.witaminaDProduktu}"></span><span th:text="${produkt.getVitaminD()}"></span></p>
+        <p><span class="bold" th:text="#{message.witaminaB12Produktu}"></span><span th:text="${produkt.getVitaminB12()}"></span></p>
+    <a th:href="@{/produkty/{id}/edit(id=${produkt.getId()})}" sec:authorize="hasRole('ADMIN')">
+        <button th:text="#{message.edytujProdukt}"></button>
+    </a>
+    <a th:href="@{/produkty/{id}/delete(id=${produkt.getId()})}" sec:authorize="hasRole('ADMIN')">
+        <button th:text="#{message.usunProdukt}"></button>
+    </a>
+    </span>
+</main>
+<footer>Adrian Politowski 313128
+    <div class="jezyki">
+        <a th:href="@{'?lang=pl'}">
+            <button th:text="#{message.polski}"></button>
+        </a>
+        <a th:href="@{'?lang=pn'}">
+            <button th:text="#{message.pendzabksi}"></button>
+        </a>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{message.editKategorie}"></title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header{
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      text-align: center;
+      padding: 10px;
+      min-height: 10%;
+      flex: 10%;
+    }
+
+    footer{
+      background-color: #0E4749;
+      text-align: center;
+      padding: 10px;
+      color: #ECEDDF;
+      min-height: 9%;
+      flex: 5%;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 9%
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 10px 400px 10px 10px;
+      background-color: #F5F1EB;
+      padding-bottom: 9%;
+      flex: 85%;
+    }
+    .menu {
+      position: relative;
+      bottom: 10%;
+      width: 10%;
+      height: 80%;
+      cursor: pointer;
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      color: #ECEDDF;
+      border-right: 3px solid #002626;
+      border-left: 3px solid #002626;
+      border-bottom: 3px solid #0E4749;
+      border-top: 3px solid #0E4749;
+      white-space: nowrap;
+
+    }
+
+    .menu:hover {
+      background: linear-gradient(to bottom, #125C5E, #166F73);
+    }
+
+    .menu:active {
+      border-top: 3px solid #002626;
+      border-bottom: 3px solid #125C5E;
+      background: #003B3B;
+    }
+
+    .guzikPrawa{
+      left: 25%;
+
+    }
+    .napis{
+      position: absolute;
+      top: 5%;
+      left: 2%;
+      color: #ECEDDF;
+      font-size: 1.3rem;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <p class="napis" th:text="#{message.editKategorie}"></p>
+  <a href="/produkty/lista">
+    <button class="menu" th:text="#{message.produkty}"></button>
+  </a>
+  <a href="/zapotrzebowanie" sec:authorize="isAuthenticated()">
+    <button class="menu"  th:text="#{message.zapotrzebowanie}"></button>
+  </a>
+  <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.dodajprodukt}"></button>
+  </a>
+  <a href="/kategorie" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.kategorie}"></button>
+  </a>
+  <a href="/konto" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.mojekonto}"></button>
+  </a>
+  <a href="/logout" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+  </a>
+</header>
+<main>
+  <span th:text="#{message.errorKategorieNotFound}" th:if="${edit} == 'false'"></span>
+  <form action="#" th:action="@{/kategorie/{id}/edit (id=${kategoria.getId()})}" th:object="${kategorieDTO}" method="post" enctype="multipart/form-data" th:if="${edit}=='true'">
+    <p><span th:text="#{message.nazwaKategori}"></span><input type="text" th:value="${kategoria.getName()}" name="name" id="name" required></p>
+    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" ></p>
+    <p th:text="#{message.errorKategorie}" th:if="${error} == 'true'"></p>
+    <p><span th:text="#{message.zdjecieKategori}"></span><input type="file" th:field="*{file}" accept="image/*"  required></p>
+    <button type="submit" th:text="#{message.zapisz}"></button>
+  </form>
+  <p><span th:text="#{message.succesKategorieEdit}" th:if="${edited}=='true'"></span></p>
+</main>
+<footer>Adrian Politowski 313128
+  <div class="jezyki">
+    <a th:href="@{'?lang=pl'}">
+      <button th:text="#{message.polski}"></button>
+    </a>
+    <a th:href="@{'?lang=pn'}">
+      <button th:text="#{message.pendzabksi}"></button>
+    </a>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{message.kategorie}"></title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header{
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      text-align: center;
+      padding: 10px;
+      min-height: 10%;
+      flex: 10%;
+    }
+
+    footer{
+      background-color: #0E4749;
+      text-align: center;
+      padding: 10px;
+      color: #ECEDDF;
+      min-height: 9%;
+      flex: 5%;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 9%;
+      z-index: 3;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 10px 400px 10px 10px;
+      background-color: #F5F1EB;
+      padding-bottom: 9%;
+      flex: 85%;
+    }
+    .menu {
+      position: relative;
+      bottom: 10%;
+      width: 10%;
+      height: 80%;
+      cursor: pointer;
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      color: #ECEDDF;
+      border-right: 3px solid #002626;
+      border-left: 3px solid #002626;
+      border-bottom: 3px solid #0E4749;
+      border-top: 3px solid #0E4749;
+      white-space: nowrap;
+    }
+
+    .menu:hover {
+      background: linear-gradient(to bottom, #125C5E, #166F73);
+    }
+
+    .menu:active {
+      border-top: 3px solid #002626;
+      border-bottom: 3px solid #125C5E;
+      background: #003B3B;
+    }
+
+    .guzikPrawa{
+      left: 25%;
+
+    }
+    .napis{
+      position: absolute;
+      top: 5%;
+      left: 2%;
+      color: #ECEDDF;
+      font-size: 1.3rem;
+    }
+
+
+    img {
+      padding-top: 10px;
+      width: 150px;
+      min-width: 150px;
+      height: 150px;
+      min-height: 150px;
+      box-sizing: border-box;
+      margin-left: 15px;
+      cursor: pointer;
+
+    }
+    .nazwa{
+      position: relative;
+      left:20px;
+      top:25px;
+    }
+
+    .delete {
+      display: inline-block;
+      width: 20px;
+      height: 25px;
+      bottom: 120px;
+      right: 30px;
+      cursor: pointer;
+      z-index: 2;
+      position: relative;
+      border: 7px solid #c43333;
+      background:
+              linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#fff 45%,#fff 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+              linear-gradient(135deg, #c43333 0%,#c43333 43%,#fff 45%,#fff 55%,#c43333 57%,#c43333 100%);
+    }
+
+    .delete:hover{
+      border: 7px solid #d93d3d;
+      background:
+              linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#fff 45%,#fff 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+              linear-gradient(135deg, #d93d3d 0%,#d93d3d 43%,#fff 45%,#fff 55%,#d93d3d 57%,#d93d3d 100%);
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <p class="napis" th:text="#{message.kategorie}"></p>
+  <a href="/produkty/lista">
+    <button class="menu" th:text="#{message.produkty}"></button>
+  </a>
+  <a href="/zapotrzebowanie" sec:authorize="isAuthenticated()">
+    <button class="menu"  th:text="#{message.zapotrzebowanie}"></button>
+  </a>
+  <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.dodajprodukt}"></button>
+  </a>
+  <a href="/konto" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.mojekonto}"></button>
+  </a>
+  <a href="/logout" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+  </a>
+</header>
+<main>
+  <form action="#" th:action="@{/kategorie}" th:object="${kategorieDTO}" method="post" enctype="multipart/form-data">
+    <p><span th:text="#{message.nazwaKategori}"></span><input type="text" th:field="*{name}" required></p>
+    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" ></p>
+    <p th:text="#{message.errorKategorie}" th:if="${error} == 'true'"></p>
+    <p><span th:text="#{message.zdjecieKategori}"></span><input type="file" th:field="*{file}" accept="image/*" required></p>
+    <button type="submit" th:text="#{message.przeslij}"></button>
+  </form>
+  <p><span th:text="#{message.succesKategorie}" th:if="${deleted}=='true'"></span></p>
+  <p><span th:text="#{message.errorKategorieNotFound}" th:if="${deleted}=='error'"></span></p>
+  <span th:each="kategoria : ${lista}" class="blok">
+    <p th:text="${kategoria.getName()}" class="nazwa"></p>
+    <a th:href="@{/kategorie/{id}/edit (id=${kategoria.getId()})}">
+      <img th:src="'data:image/jpeg;base64,' + ${kategoria.getImage()}">
+    </a>
+    <a th:href="@{/kategorie/{id}/delete (id=${kategoria.getId()})}">
+      <button class="delete"></button>
+    </a>
+  </span>
+</main>
+<footer>Adrian Politowski 313128
+  <div class="jezyki">
+    <a th:href="@{'?lang=pl'}">
+      <button th:text="#{message.polski}"></button>
+    </a>
+    <a th:href="@{'?lang=pn'}">
+      <button th:text="#{message.pendzabksi}"></button>
+    </a>
+  </div>
+</footer>
+</body>
+</html>

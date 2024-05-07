@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pl-PL"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${produkt.getName()}"></title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header{
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      text-align: center;
+      padding: 10px;
+      min-height: 10%;
+      flex: 10%;
+
+    }
+
+    footer{
+      background-color: #0E4749;
+      text-align: center;
+      padding: 10px;
+      color: #ECEDDF;
+      min-height: 9%;
+      flex: 5%;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 9%
+    }
+    img{
+      padding-top: 10px;
+      width: 250px;
+      height: 250px;
+      box-sizing: border-box;
+      margin-left: 15px;
+
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 10px;
+      background-color: #F5F1EB;
+      padding-bottom: 9%;
+      flex: 85%;
+
+    }
+    .menu {
+      position: relative;
+      bottom: 10%;
+      width: 10%;
+      height: 80%;
+      cursor: pointer;
+      background: linear-gradient(to bottom, #0E4749, #135E61);
+      color: #ECEDDF;
+      border-right: 3px solid #002626;
+      border-left: 3px solid #002626;
+      border-bottom: 3px solid #0E4749;
+      border-top: 3px solid #0E4749;
+      white-space: nowrap;
+    }
+
+    .menu:hover {
+      background: linear-gradient(to bottom, #125C5E, #166F73);
+    }
+
+    .menu:active {
+      border-top: 3px solid #002626;
+      border-bottom: 3px solid #125C5E;
+      background: #003B3B;
+    }
+
+    .guzikPrawa{
+      left: 25%;
+
+    }
+    .bold{
+      font-weight: bold;
+    }
+
+    .napis{
+      position: absolute;
+      top: 5%;
+      left: 2%;
+      color: #ECEDDF;
+      font-size: 1.3rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="napis" th:text="${produkt.getName()}"></p>
+  <a href="/produkty/lista">
+    <button class="menu" th:text="#{message.produkty}"></button>
+  </a>
+  <a href="/zapotrzebowanie" sec:authorize="isAuthenticated()">
+    <button class="menu" th:text="#{message.zapotrzebowanie}"></button>
+  </a>
+  <a href="/produkty/dodaj" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.dodajprodukt}"></button>
+  </a>
+  <a href="/kategorie" sec:authorize="hasRole('ADMIN')">
+    <button class="menu" th:text="#{message.kategorie}"></button>
+  </a>
+  <a href="/konto" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.mojekonto}"></button>
+  </a>
+  <a href="/logout" sec:authorize="isAuthenticated()">
+    <button class="guzikPrawa menu" th:text="#{message.wyloguj}"></button>
+  </a>
+  <a href="/login" sec:authorize="isAnonymous()">
+    <button class="guzikPrawa menu" th:text="#{message.zaloguj}"></button>
+  </a>
+  <a href="/register" sec:authorize="isAnonymous()">
+    <button class="guzikPrawa menu" th:text="#{message.zarejestruj}"></button>
+  </a>
+</header>
+<main>
+    <span th:if="${error}=='true'" th:text="#{message.errorFound}">
+    </span>
+  <span th:unless="${error}=='true'">
+    <form action="#" th:action="@{/produkty/{id}/edit(id=${produkt.getId()})}" th:object="${produktyDTO}" method="post" enctype="multipart/form-data">
+    <p><span th:text="#{message.nazwaProduktu}"></span><input type="text" name="name" id="name" th:value="${produkt.getName()}"></p>
+    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" ></p>
+    <p><span th:text="#{message.sredniaWagaProduktu}"></span><input type="number" name="averageWeight" id="averageWeight" th:value="${produkt.getAverageWeight()}"></p>
+    <p th:if="${#fields.hasErrors('averageWeight')}" th:errors="*{averageWeight}" ></p>
+    <p><span th:text="#{message.kcalProduktu}"></span><input type="number" name="kcal" id="kcal" th:value="${produkt.getKcal()}"></p>
+    <p th:if="${#fields.hasErrors('kcal')}" th:errors="*{kcal}" ></p>
+    <p><span th:text="#{message.tluszczProduktu}"></span><input type="number" step="0.01" name="fat" id="fat" th:value="${produkt.getFat()}"></p>
+    <p th:if="${#fields.hasErrors('fat')}" th:errors="*{fat}" ></p>
+    <p><span th:text="#{message.tluszczeNasyconeProduktu}"></span><input type="number" step="0.01" name="saturatedFat" id="saturatedFat" th:value="${produkt.getSaturatedFat()}"></p>
+    <p th:if="${#fields.hasErrors('saturatedFat')}" th:errors="*{saturatedFat}" ></p>
+    <p><span th:text="#{message.cholesterolProduktu}"></span><input type="number" name="cholesterol" id="cholesterol" th:value="${produkt.getCholesterol()}"></p>
+    <p th:if="${#fields.hasErrors('cholesterol')}" th:errors="*{cholesterol}" ></p>
+    <p><span th:text="#{message.sodProduktu}"></span><input type="number" name="sodium" id="sodium" th:value="${produkt.getSodium()}"></p>
+    <p th:if="${#fields.hasErrors('sodium')}" th:errors="*{sodium}" ></p>
+    <p><span th:text="#{message.potasProduktu}"></span><input type="number" name="potassium" id="potassium" th:value="${produkt.getPotassium()}"></p>
+    <p th:if="${#fields.hasErrors('potassium')}" th:errors="*{potassium}" ></p>
+    <p><span th:text="#{message.weglowodanyProduktu}"></span><input type="number" name="carbohydrates" id="carbohydrates" th:value="${produkt.getCarbohydrates()}"></p>
+    <p th:if="${#fields.hasErrors('carbohydrates')}" th:errors="*{carbohydrates}" ></p>
+    <p><span th:text="#{message.blonnikProduktu}"></span><input type="number" step="0.01" name="fiber" id="fiber" th:value="${produkt.getFiber()}"></p>
+    <p th:if="${#fields.hasErrors('fiber')}" th:errors="*{fiber}" ></p>
+    <p><span th:text="#{message.cukryProduktu}"></span><input type="number" step="0.01" name="sugars" id="sugars" th:value="${produkt.getSugars()}"></p>
+    <p th:if="${#fields.hasErrors('sugars')}" th:errors="*{sugars}" ></p>
+    <p><span th:text="#{message.bialkoProduktu}"></span><input type="number" step="0.01" name="protein" id="protein" th:value="${produkt.getProtein()}"></p>
+    <p th:if="${#fields.hasErrors('protein')}" th:errors="*{protein}" ></p>
+    <p><span th:text="#{message.kwasAskorbinowyProduktu}"></span><input type="number" step="0.01" name="ascorbicAcid" id="ascorbicAcid" th:value="${produkt.getAscorbicAcid()}"></p>
+    <p th:if="${#fields.hasErrors('ascorbicAcid')}" th:errors="*{ascorbicAcid}" ></p>
+    <p><span th:text="#{message.zelazoProduktu}"></span><input type="number" step="0.01" name="iron" id="iron" th:value="${produkt.getIron()}"></p>
+    <p th:if="${#fields.hasErrors('iron')}" th:errors="*{iron}" ></p>
+    <p><span th:text="#{message.witaminaB6Produktu}"></span><input type="number" step="0.01" name="vitaminB6" id="vitaminB6" th:value="${produkt.getVitaminB6()}"></p>
+    <p th:if="${#fields.hasErrors('vitaminB6')}" th:errors="*{vitaminB6}" ></p>
+    <p><span th:text="#{message.magnezProduktu}"></span><input type="number" name="magnesium" id="magnesium" th:value="${produkt.getMagnesium()}"></p>
+    <p th:if="${#fields.hasErrors('magnesium')}" th:errors="*{magnesium}" ></p>
+    <p><span th:text="#{message.wapnProduktu}"></span><input type="number" name="calcium" id="calcium" th:value="${produkt.getCalcium()}"></p>
+    <p th:if="${#fields.hasErrors('calcium')}" th:errors="*{calcium}" ></p>
+    <p><span th:text="#{message.witaminaDProduktu}"></span><input type="number" name="vitaminD" id="vitaminD" step="0.01" th:value="${produkt.getVitaminD()}"></p>
+    <p th:if="${#fields.hasErrors('vitaminD')}" th:errors="*{vitaminD}" ></p>
+    <p><span th:text="#{message.witaminaB12Produktu}"></span><input type="number" name="vitaminB12" id="vitaminB12" step="0.01" th:value="${produkt.getVitaminB12()}"></p>
+    <p th:if="${#fields.hasErrors('vitaminB12')}" th:errors="*{vitaminB12}" ></p>
+    <p><span th:text="#{message.kategoriaProduktu}"></span>
+    <select id="kategoria" name="kategoria">
+            <option th:each="kategorie : ${lista}" th:text="${kategorie}" th:value="${kategorie}" th:selected="${produkt.getKategoria() == kategorie}"></option>
+    </select>
+    </p>
+    <p><span th:text="#{message.zdjecieProduktu}"></span><input type="file" th:field="*{file}" accept="image/*" required></p>
+    <button type="submit" th:text="#{message.zapisz}"></button>
+    </form>
+    <a th:href="@{/produkty/{id}(id=${produkt.getId()})}">
+      <button th:text="#{message.wroc}"></button>
+    </a>
+    </span>
+</main>
+<footer>Adrian Politowski 313128
+  <div class="jezyki">
+    <a th:href="@{'?lang=pl'}">
+      <button th:text="#{message.polski}"></button>
+    </a>
+    <a th:href="@{'?lang=pn'}">
+      <button th:text="#{message.pendzabksi}"></button>
+    </a>
+  </div>
+</footer>
+</body>
+</html>
